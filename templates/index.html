@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>书籍首页</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+            color: #4caf50;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: normal;
+        }
+
+        .books-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .book-item {
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            width: 280px; /* 固定宽度 */
+            padding-top: 157.5px; /* 高度：宽度的 9/16 */
+            transition: transform 0.2s;
+        }
+
+        .book-item:hover {
+            transform: scale(1.02);
+        }
+
+        .book-info {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .book-info a {
+            text-decoration: none;
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .book-info a:hover {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<h1>书籍分享与资源共享</h1>
+<div class="books-container">
+    {% for book in books %}
+        <div class="book-item">
+            <div class="book-info">
+                <a href="book/{{ book.id }}">书籍名称：{{ book.title }}</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+</body>
+</html>

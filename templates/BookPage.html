@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Page with Carousel and Comments</title>
+    <style>
+        /* 全局容器 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .book-page-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* 轮播图容器 */
+        .carousel {
+            position: relative;
+            align-content: center;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .carousel-images {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-images img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .carousel-button {
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 50%;
+            outline: none;
+            transition: background 0.3s ease;
+        }
+
+        .carousel-button:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .carousel-indicator {
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .carousel-indicator {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        /* 评论区样式 */
+        .comments {
+            margin-top: 30px;
+        }
+
+        .comments h3 {
+            font-size: 1.8em;
+            color: #34495e;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        .comments ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .comments li {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f7f7f7;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .comments li p {
+            margin: 5px 0;
+        }
+
+        .comments li p strong {
+            color: #2980b9;
+        }
+
+        /* 表单容器 */
+        form[is="ui-form"] {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        label {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .ui-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s ease;
+        }
+
+        .ui-input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .ui-button {
+            padding: 12px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .ui-button:hover {
+            background-color: #0056b3;
+        }
+
+        .ui-button:focus {
+            outline: none;
+        }
+
+        /* 移动端适配 */
+        @media screen and (max-width: 767px) {
+            form[is="ui-form"] {
+                width: 85%;
+                padding: 15px;
+            }
+
+            .ui-input {
+                width: 88%;
+                padding: 12px;
+                font-size: 16px;
+            }
+
+            .ui-button {
+                width: 100%;
+                padding: 12px;
+            }
+        }
+
+        /* 大屏设备（桌面端适配） */
+        @media screen and (min-width: 768px) {
+            form[is="ui-form"] {
+                padding: 30px;
+                width: 100%;
+            }
+
+            .ui-input {
+                font-size: 14px;
+            }
+
+            .ui-button {
+                padding: 12px 20px;
+            }
+        }
+
+        /* 初始状态，消息在页面顶部外面 */
+        #warning-message-container {
+            position: fixed;
+            top: -100px; /* 初始隐藏在页面顶部 */
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            background-color: #f8d7da;
+            color: #721c24;
+            text-align: center;
+            padding: 15px;
+            font-size: 16px;
+            transition: top 0.5s ease-out; /* 动画过渡 */
+        }
+
+        #warning-message-container ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        #warning-message-container li {
+            margin: 10px 0;
+        }
+
+        #warning-message-container {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+    </style>
+</head>
+<body>
+<!-- Header -->
+{% include 'Header.html' %}
+
+<!-- Main Content -->
+<div class="book-page-container">
+    <!-- Book Information -->
+    <header>
+        <h1>{{ title }}</h1>
+        <h3>{{ detail }}</h3>
+    </header>
+
+    <!-- Carousel Section -->
+    <div class="carousel">
+        <div class="carousel-images">
+            {% for image_url in image_urls %}
+                <img src="{{ image_url }}" alt="Book Image">
+            {% endfor %}
+        </div>
+        <div class="carousel-controls">
+            <button class="carousel-button prev">❮</button>
+            <button class="carousel-button next">❯</button>
+        </div>
+        <div class="carousel-indicators">
+            {% for image_url in image_urls %}
+                <div class="carousel-indicator" data-index="{{ forloop.counter0 }}"></div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <section class="comments">
+        <h3>Comments</h3>
+        <ul>
+            {% for comment in comments %}
+                <li>
+                    <p><strong>{{ comment.date }}:</strong></p>
+                    <p>{{ comment.content }}</p>
+                </li>
+            {% empty %}
+                <p>No comments yet.</p>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- Comment Form -->
+    <form action="/book/{{ book_id }}/submit" method="post" is="ui-form" keepfocus novalidate>
+        {% csrf_token %}
+        <label for="comment">评论</label>
+        <input type="text" id="comment" class="ui-input" name="comment" required>
+        <button type="submit" class="ui-button" data-type="primary">提交</button>
+    </form>
+</div>
+{% if messages %}
+    <div id="warning-message-container">
+        <ul id="warning-message-list">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<!-- Footer -->
+{% include 'Footer.html' %}
+<script>
+    // 轮播图逻辑
+    const images = document.querySelector('.carousel-images');
+    const indicators = document.querySelectorAll('.carousel-indicator');
+    const prevButton = document.querySelector('.carousel-button.prev');
+    const nextButton = document.querySelector('.carousel-button.next');
+    let currentIndex = 0;
+
+    function updateCarousel(index) {
+        images.style.transform = `translateX(-${index * 100}%)`;
+        indicators.forEach((indicator, i) => {
+            indicator.classList.toggle('active', i === index);
+        });
+    }
+
+    nextButton.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % indicators.length;
+        updateCarousel(currentIndex);
+    });
+
+    prevButton.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + indicators.length) % indicators.length;
+        updateCarousel(currentIndex);
+    });
+
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            currentIndex = index;
+            updateCarousel(currentIndex);
+        });
+    });
+    window.onload = function () {
+        const container = document.getElementById('warning-message-container');
+        if (container) {
+            // 显示消息
+            container.style.top = '0';  // 动画滑入
+
+            // 设定几秒后隐藏消息
+            setTimeout(function () {
+                container.style.top = '-100px';  // 隐藏
+            }, 1500);  // 1.5秒后消失
+        }
+    }
+</script>
+</body>
+</html>

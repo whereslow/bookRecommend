@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header with User Avatar</title>
+    <style>
+        header.user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #2c3e50;
+            color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        header.user-header .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ecf0f1;
+            text-decoration: none;
+        }
+
+        header.user-header .user-avatar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        header.user-header .user-avatar img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #ecf0f1;
+        }
+
+        header.user-header .user-avatar span {
+            margin-left: 10px;
+            font-size: 1em;
+            color: #ecf0f1;
+        }
+
+        header.user-header .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: #fff;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        header.user-header .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.2s ease;
+        }
+
+        header.user-header .dropdown-menu a:hover {
+            background-color: #f1f1f1;
+        }
+
+        header.user-header .user-avatar:hover .dropdown-menu,
+        header.user-header .dropdown-menu:hover {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<header class="user-header">
+    <!-- 网站 Logo -->
+    <a href="#" class="logo">My Website</a>
+
+</header>
+</body>
+</html>
