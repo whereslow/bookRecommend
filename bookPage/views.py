@@ -20,9 +20,10 @@ def bookPage(request, book_id):
     except (BookInfo.DoesNotExist or Account.DoesNotExist
             or AccessCode.DoesNotExist or BookImage.DoesNotExist
             or Review.DoesNotExist):
-        return render(request,"404.html",status=404)
+        return render(request, "404.html", status=404)
     access = request.GET.get("access")
-    details = markdown.markdown(book.details)
+    detail = book.details.replace('\\n', "\n")
+    details = markdown.markdown(detail)
     return render(request, "BookPage.html", {
         "title": book.title,
         "detail": details,
