@@ -41,5 +41,6 @@ class AccessCode(models.Model):
     book_id = models.IntegerField(verbose_name="书id")
     name = models.CharField(max_length=20, verbose_name="网盘名称")
     link = models.CharField(max_length=500, verbose_name="提取链接")
+    secretId = models.CharField(max_length=20, verbose_name="公众号提取id")
     secret = models.CharField(max_length=20, verbose_name="公众号提取密码")
     accessCode = models.CharField(max_length=20, verbose_name="提取码")

@@ -9,13 +9,18 @@ import markdown
 
 # Create your views here.
 def bookPage(request, book_id):
-    book = BookInfo.objects.get(id=book_id)
-    account_name = book.account_name
-    account = Account.objects.get(name=account_name)
-    images = BookImage.objects.filter(book_id=book_id)
-    image_urls = [image.image for image in images]
-    comments = Review.objects.filter(book_id=book_id)
-    access_code = AccessCode.objects.get(book_id=book_id)
+    try:
+        book = BookInfo.objects.get(id=book_id)
+        account_name = book.account_name
+        account = Account.objects.get(name=account_name)
+        images = BookImage.objects.filter(book_id=book_id)
+        image_urls = [image.image for image in images]
+        comments = Review.objects.filter(book_id=book_id)
+        access_code = AccessCode.objects.get(book_id=book_id)
+    except (BookInfo.DoesNotExist or Account.DoesNotExist
+            or AccessCode.DoesNotExist or BookImage.DoesNotExist
+            or Review.DoesNotExist):
+        return render(request,"404.html",status=404)
     access = request.GET.get("access")
     details = markdown.markdown(book.details)
     return render(request, "BookPage.html", {
@@ -27,7 +32,8 @@ def bookPage(request, book_id):
         "account_url": account.url,
         "account_title": account.name,
         "link": access_code.link,
-        "access": access
+        "access": access,
+        "secret_id": access_code.secretId
     })
 
 
