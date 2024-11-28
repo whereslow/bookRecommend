@@ -23,76 +23,6 @@
             border-radius: 8px;
         }
 
-        /* 轮播图容器 */
-        .carousel {
-            position: relative;
-            align-content: center;
-            width: 100%;
-            height: 400px;
-            overflow: hidden;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .carousel-images {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-        }
-
-        .carousel-images img {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .carousel-controls {
-            position: absolute;
-            top: 50%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            transform: translateY(-50%);
-        }
-
-        .carousel-button {
-            background: rgba(0, 0, 0, 0.5);
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 18px;
-            border-radius: 50%;
-            outline: none;
-            transition: background 0.3s ease;
-        }
-
-        .carousel-button:hover {
-            background: rgba(0, 0, 0, 0.7);
-        }
-
-        .carousel-indicators {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-        }
-
-        .carousel-indicator {
-            width: 10px;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .carousel-indicator {
-            background: rgba(255, 255, 255, 1);
-        }
-
         /* 评论区样式 */
         .comments {
             margin-top: 30px;
@@ -254,25 +184,21 @@
     <!-- Book Information -->
     <header>
         <h1>{{ title }}</h1>
-        <h3>{{ detail }}</h3>
+        <div>
+            {{ detail | safe }}
+        </div>
     </header>
+    <div style="margin-top: 5em ">
+        <h3>相关图片:</h3>
+    </div>
 
-    <!-- Carousel Section -->
-    <div class="carousel">
-        <div class="carousel-images">
-            {% for image_url in image_urls %}
-                <img src="{{ image_url }}" alt="Book Image">
-            {% endfor %}
-        </div>
-        <div class="carousel-controls">
-            <button class="carousel-button prev">❮</button>
-            <button class="carousel-button next">❯</button>
-        </div>
-        <div class="carousel-indicators">
-            {% for image_url in image_urls %}
-                <div class="carousel-indicator" data-index="{{ forloop.counter0 }}"></div>
-            {% endfor %}
-        </div>
+    {# 图片排版 #}
+    <div style="margin: 5em auto;border: 2px solid black;border-radius: 5px;">
+        {% for image_url in image_urls %}
+            <div style="text-align: center;margin: 3em auto">
+                <img src="{{ image_url }}" alt="书籍图片" style="width: 85%; height: auto;">
+            </div>
+        {% endfor %}
     </div>
 
 
@@ -290,9 +216,9 @@
             {% csrf_token %}
 
             <label for="secret"
-                   style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 8px; display: block;">获取提取码</label>
+                   style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 8px; display: block;">获取提取码(关注公众号即可获取)</label>
 
-            <input type="text" id="secret" class="ui-input" name="secret" required
+            <input type="text" id="secret" class="ui-input" name="secret" autocomplete="off" required
                    style="width: 100%; padding: 10px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 20px; box-sizing: border-box;">
 
             <button type="submit" class="ui-button" data-type="primary"
@@ -303,7 +229,8 @@
     </div>
     {# 公众号二维码 #}
     <div style="text-align: center; padding: 20px; background-color: #ffffff; border: 2px solid #6e6e6e; border-radius: 8px; max-width: 300px; margin: 30px auto; box-shadow: 1px 4px 6px rgba(0, 0, 0, 0.1);">
-        <h2 style=" margin-bottom: 15px;">{{ account_title }}</h2>
+        <p style="font-size: 12px">关注公众号即可获取提取码</p>
+        <h3 style=" margin-bottom: 15px;">微信公众号:{{ account_title }}</h3>
         <img src="{{ account_url }}" alt="二维码"
              style="width: 200px; height: 200px; border: 1px solid #ccc; border-radius: 8px;">
     </div>
@@ -326,7 +253,7 @@
     <form action="/book/{{ book_id }}/submit" method="post" is="ui-form" keepfocus novalidate>
         {% csrf_token %}
         <label for="comment">评论</label>
-        <input type="text" id="comment" class="ui-input" name="comment" required>
+        <input type="text" id="comment" class="ui-input" name="comment" autocomplete="off" required>
         <button type="submit" class="ui-button" data-type="primary">提交</button>
     </form>
 </div>
@@ -345,36 +272,6 @@
 <!-- Footer -->
 {% include 'Footer.html' %}
 <script>
-    // 轮播图逻辑
-    const images = document.querySelector('.carousel-images');
-    const indicators = document.querySelectorAll('.carousel-indicator');
-    const prevButton = document.querySelector('.carousel-button.prev');
-    const nextButton = document.querySelector('.carousel-button.next');
-    let currentIndex = 0;
-
-    function updateCarousel(index) {
-        images.style.transform = `translateX(-${index * 100}%)`;
-        indicators.forEach((indicator, i) => {
-            indicator.classList.toggle('active', i === index);
-        });
-    }
-
-    nextButton.addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % indicators.length;
-        updateCarousel(currentIndex);
-    });
-
-    prevButton.addEventListener('click', () => {
-        currentIndex = (currentIndex - 1 + indicators.length) % indicators.length;
-        updateCarousel(currentIndex);
-    });
-
-    indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', () => {
-            currentIndex = index;
-            updateCarousel(currentIndex);
-        });
-    });
     window.onload = function () {
         const container = document.getElementById('warning-message-container');
         if (container) {

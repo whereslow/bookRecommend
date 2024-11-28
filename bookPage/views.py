@@ -4,7 +4,7 @@ from django.core.cache import cache
 import socket
 import struct
 from django.contrib import messages
-import random
+import markdown
 
 
 # Create your views here.
@@ -17,9 +17,10 @@ def bookPage(request, book_id):
     comments = Review.objects.filter(book_id=book_id)
     access_code = AccessCode.objects.get(book_id=book_id)
     access = request.GET.get("access")
+    details = markdown.markdown(book.details)
     return render(request, "BookPage.html", {
         "title": book.title,
-        "detail": book.details,
+        "detail": details,
         "image_urls": image_urls,
         "comments": comments,
         "book_id": book_id,
