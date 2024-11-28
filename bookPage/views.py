@@ -33,8 +33,7 @@ def bookPage(request, book_id):
 def index(request):
     books = list(BookInfo.objects.all())
     # 随机选取最多6本书籍
-    random_books = random.sample(books, min(len(books), 6))
-    return render(request, 'index.html', {'books': random_books})
+    return render(request, 'index.html', {'books': books})
 
 
 def submitComment(request, book_id):

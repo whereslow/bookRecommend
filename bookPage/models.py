@@ -8,6 +8,7 @@ class BookInfo(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=20, verbose_name='名称')
     # details 用markdown格式
+    intro = models.CharField(max_length=200, verbose_name='简介')
     details = models.CharField(max_length=5000, verbose_name='详情')
     account_name = models.CharField(max_length=20, verbose_name='公众号名称')
     other = models.CharField(max_length=5000, verbose_name='其他')
