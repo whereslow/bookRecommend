@@ -23,5 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', bookPage.views.index),
     path('book/<int:book_id>/', bookPage.views.bookPage),
-    path('book/<int:book_id>/submit',bookPage.views.submitComment)
+    path('book/<int:book_id>/submit', bookPage.views.submitComment),
+    path('book/<int:book_id>/access', bookPage.views.accessBookCode),
 ]

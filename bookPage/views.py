@@ -1,23 +1,32 @@
 from django.shortcuts import render, redirect
-from .models import BookInfo, BookImage, Review
+from .models import BookInfo, BookImage, Review, Account, AccessCode
 from django.core.cache import cache
 import socket
 import struct
 from django.contrib import messages
 import random
 
+
 # Create your views here.
 def bookPage(request, book_id):
     book = BookInfo.objects.get(id=book_id)
+    account_name = book.account_name
+    account = Account.objects.get(name=account_name)
     images = BookImage.objects.filter(book_id=book_id)
     image_urls = [image.image for image in images]
     comments = Review.objects.filter(book_id=book_id)
+    access_code = AccessCode.objects.get(book_id=book_id)
+    access = request.GET.get("access")
     return render(request, "BookPage.html", {
         "title": book.title,
         "detail": book.details,
         "image_urls": image_urls,
         "comments": comments,
-        "book_id": book_id
+        "book_id": book_id,
+        "account_url": account.url,
+        "account_title": account.name,
+        "link": access_code.link,
+        "access": access
     })
 
 
@@ -45,3 +54,18 @@ def submitComment(request, book_id):
         Review.objects.create(user_id=sig, book_id=book_id, content=content)
         cache.set(ip, 1, 600)
         return redirect(f"/book/{book_id}")
+
+
+def accessBookCode(request, book_id):
+    if request.method == "POST":
+        secret = request.POST.get("secret")
+        access_code = AccessCode.objects.get(book_id=book_id)
+        if access_code.secret != secret:
+            # 提示访问码错误
+            messages.warning(request, "访问码错误")
+            return redirect(f"/book/{book_id}#webdisk")
+            pass
+        else:
+            # 弹出访问码
+            messages.success(request, f"获取成功,访问码为{access_code.accessCode}")
+            return redirect(f"/book/{book_id}?access={access_code.accessCode}#webdisk")

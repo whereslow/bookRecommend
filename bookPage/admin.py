@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from bookPage.models import BookInfo, Review, BookImage
+from bookPage.models import BookInfo, Review, BookImage, Account, AccessCode
 
 
 # Register your models here.
@@ -16,4 +16,14 @@ class ReviewAdmin(admin.ModelAdmin):
 
 @admin.register(BookImage)
 class BookImageAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Account)
+class AccountAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(AccessCode)
+class AccessCodeAdmin(admin.ModelAdmin):
     pass
